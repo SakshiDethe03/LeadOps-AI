@@ -96,8 +96,33 @@ leadops-ai/
 ## ⚙️ Setup
 
 - Clone the repository.
+```
+git clone https://github.com/SakshiDethe03/LeadOps-AI.git
+cd LeadOps-AI
+```
+
+- Create your Make.com workflow.
+```
+Webhook
+   ↓
+Gemini
+   ↓
+Parse JSON
+   ↓
+Google Sheets
+   ↓
+Conditional Email
+   ↓
+Webhook Response
+```
+
 - Create config.js from config.example.js.
-- Add your Make.com webhook URL.
+```
+const config = {
+    webhookUrl: 'YOUR_MAKE_WEBHOOK_URL'
+};
+```
+
 - Open index.html using Live Server.
 
 Keep config.js out of GitHub if it contains your actual webhook URL.

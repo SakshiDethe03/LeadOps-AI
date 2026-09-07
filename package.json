@@ -1,0 +1,9 @@
+{
+  "name": "leadops-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-powered lead qualification and follow-up automation using Google Gemini, Make.com, and Google Sheets.",
+  "scripts": {
+    "start": "npx vercel dev"
+  }
+}

@@ -1,8 +1,13 @@
 # Local configuration
 config.js
 
-#Environment variables
+# Environment variables
 .env
+.env.local
+
+# Vercel & Node
+.vercel/
+node_modules/
 
 # OS files
 .DS_Store

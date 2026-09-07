@@ -157,30 +157,58 @@ document.addEventListener('DOMContentLoaded', () => {
     showView('loading');
 
     try {
-      if (!CONFIG.MAKE_WEBHOOK_URL || CONFIG.MAKE_WEBHOOK_URL === "YOUR_MAKE_WEBHOOK_URL") {
-        throw new Error("Make.com Webhook URL is not configured in config.js");
+      let response;
+      let targetEndpoint = '/api/lead';
+
+      // Primary attempt: Vercel Serverless API Proxy
+      try {
+        response = await fetch(targetEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        // If endpoint is not found (404) and local CONFIG.MAKE_WEBHOOK_URL exists, fallback to direct webhook
+        if (response.status === 404 && typeof CONFIG !== 'undefined' && CONFIG.MAKE_WEBHOOK_URL && CONFIG.MAKE_WEBHOOK_URL !== "YOUR_MAKE_WEBHOOK_URL") {
+          targetEndpoint = CONFIG.MAKE_WEBHOOK_URL;
+          response = await fetch(targetEndpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+        }
+      } catch (networkErr) {
+        // If serverless endpoint unreachable locally and CONFIG available, try direct fallback
+        if (typeof CONFIG !== 'undefined' && CONFIG.MAKE_WEBHOOK_URL && CONFIG.MAKE_WEBHOOK_URL !== "YOUR_MAKE_WEBHOOK_URL") {
+          response = await fetch(CONFIG.MAKE_WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          throw networkErr;
+        }
       }
 
-      // Step 2: Send POST request to Make.com Webhook
-      const response = await fetch(CONFIG.MAKE_WEBHOOK_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      // Step 3: Check for 2xx HTTP success response
-      if (response.ok) {
+      if (response && response.ok) {
         setModeBadgeState('completed');
         showView('success');
       } else {
-        throw new Error(`Webhook returned HTTP error ${response.status}`);
+        const errorMsg = response ? `HTTP error ${response.status}` : 'No response from server';
+        throw new Error(`Lead submission failed: ${errorMsg}`);
       }
 
     } catch (err) {
-      console.error("Lead submission error:", err);
+      console.error("Lead submission error:", err.message || err);
       setModeBadgeState('error');
       showView('error');
     } finally {

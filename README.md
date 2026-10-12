@@ -6,6 +6,14 @@ LeadOps AI captures incoming leads, analyzes their buying intent and requirement
 
 ---
 
+## ⚙️ Make.com Workflow Architecture
+
+![](assets/assets/LeadOpsAI-Workflow.png)
+
+## ✅ Successful Automation Execution
+
+![](assets/assets/LeadOpsAI-SuccessMessage.png)
+
 ## ✨ How It Works
 
 ```text
@@ -43,7 +51,7 @@ Gemini evaluates the lead based on:
 | --------- | ------------------------------------------------ | ---------- |
 | 🔴 **HIGH**   | Strong intent, clear requirement, or urgent need | Email sent |
 | 🟡 **MEDIUM** | Genuine interest but lower urgency               | Email sent |
-| ⚪ **LOW**     | General inquiry or weak buying intent            | Logged only |
+| ⚪ **LOW**     | General inquiry or weak buying intent            | Email sent |
 
 ---
 
